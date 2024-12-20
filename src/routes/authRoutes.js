@@ -61,11 +61,9 @@ router.post("/register", async (req, res) => {
       },
     });
 
-    const token = jwt.sign(
-      { id: resultUsers.lastInsertRowid },
-      process.env.JWT_SECRET,
-      { expiresIn: "24h" }
-    );
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "24h",
+    });
 
     res.json({ token });
   } catch (error) {

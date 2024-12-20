@@ -42,11 +42,12 @@ router.put("/:todoId", async (req, res) => {
   try {
     const updated = await prismaDb.todo.update({
       where: {
-        id: todoId,
+        // В params todoId - строка, а в базе данных - число
+        id: parseInt(todoId),
         userId: req.userId,
       },
       data: {
-        completed,
+        completed: !!completed,
       },
     });
     res.status(201).json(updated);
@@ -64,7 +65,7 @@ router.delete("/:todoId", async (req, res) => {
     // Проверяем id тудушки вместе с id пользователя, чтобы не удалить из базы туду с таким же id другого пользователя
     await prismaDb.todo.delete({
       where: {
-        id: todoId,
+        id: parseInt(todoId),
         userId,
       },
     });
