@@ -23,10 +23,6 @@ app.use("/todos", authMiddleware, todosRouter); //Protected routes
 // Makes directory path to be outside of src folder
 app.use(express.static(path.join(__dirname, "../public")));
 
-app.get("/hi", (req, res) => {
-  res.send("hi");
-});
-
 app.get("/", (req, res) => {
   // Sending html homepage
   res.sendFile(path.join(__dirname, "public", "index.html"));
