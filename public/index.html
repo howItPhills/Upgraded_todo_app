@@ -45,13 +45,15 @@
       <button onclick="changeTab('Complete')" class="tab-button">
         <h4>Complete <span>(0)</span></h4>
       </button>
+      <button onclick="logout()" class="logout-btn">
+        <h4>Logout</h4>
+      </button>
       <hr />
     </nav>
     <main style="display: none"></main>
   </body>
   <script>
     let token = localStorage.getItem("token");
-
     let isLoading = false;
     let isAuthenticating = false;
     let isRegistration = false;
@@ -253,6 +255,9 @@
 
     function logout() {
       // wipe states and clear cached token
+      token = null;
+      localStorage.removeItem("token");
+      window.location.reload();
     }
 
     // CRUD LOGIC

@@ -1,18 +1,22 @@
 #В этом файле можно запускать несколько контейнеров одновременно (даже без отдельного dockerfile) и тут же настраивать их взаимодействие
-version: "3"
 services:
   app:
     build: . # Запустит dockerfile который находится в этой же папке
     container_name: todo-app
+    develop:
+      watch:
+        - action: sync+restart
+          path: .
+          target: /app
     environment: #Замена .env файлу
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/todoapp
       - JWT_SECRET=daskdasdk
       - NODE_ENV=development
       - PORT=9000
     ports:
-      - "9000:9000" #Сопоставляем внешний и внутренний порты контейнера
+      - "9000:9000" #Сопоставляем внешний порт (хоста(мой компьютер)) и внутренний порт контейнера
     depends_on:
-      - db #Пишется название сервиса, от которого зависит этот контейнер
+      - db #название сервиса, от которого зависит этот контейнер и который должен быть запущен до этого
     volumes:
       - .:/app #Сохраняем логи (предыдущие состояния контейнера) в корневой папке app (путь пишется после :)
 
@@ -22,11 +26,12 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=todoapp
+      - POSTGRES_DB=todoapp #Имя базы данных (написано в конце DATABASE_URL в сервисе app)
     ports:
       - "5432:5432"
     volumes:
+      #Используем созданный ниже volume (postgres-data) для копирования данных из дб и мапим с папкой, в которой хранятся данные в самой базе данных
       - postgres-data:/var/lib/postgresql/data #Сохраняем все изменения в базе, чтобы не начинать с чистого листа после перезапуска контейнера
-
+#Создаем volume для сохранения данных из дб
 volumes:
   postgres-data:
