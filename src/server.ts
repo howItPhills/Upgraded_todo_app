@@ -1,9 +1,9 @@
 import express from "express";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
-import authRouter from "./routes/authRoutes.js";
-import authMiddleware from "./middleware/authMiddleware.js";
-import todosRouter from "./routes/todosRoutes.js";
+import authRouter from "./routes/authRoutes";
+import authMiddleware from "./middleware/authMiddleware";
+import todosRouter from "./routes/todosRoutes";
 
 const app = express();
 const PORT = process.env.PORT || 9000;

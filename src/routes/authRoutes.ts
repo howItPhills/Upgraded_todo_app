@@ -1,7 +1,16 @@
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import prismaDb from "../prismaClient.js";
+import type { Secret } from "jsonwebtoken";
+import prismaDb from "../prismaClient";
+
+// Расширяем тип JwtPayload для включения id, которым пользуемся в методе sign,
+// чтобы потом извлекать его из токена в authMiddleware (метод verify)
+declare module "jsonwebtoken" {
+  interface JwtPayload {
+    id: number;
+  }
+}
 
 const router = express.Router();
 
@@ -28,12 +37,12 @@ router.post("/login", async (req, res) => {
       return;
     }
     // If everything is ok - send back a token
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as Secret, {
       expiresIn: "24h",
     });
     res.json({ token });
-  } catch (error) {
-    console.log(error.message);
+  } catch (error: any) {
+    console.log(error?.message);
     res.sendStatus(500);
   }
 });
@@ -61,13 +70,13 @@ router.post("/register", async (req, res) => {
       },
     });
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as Secret, {
       expiresIn: "24h",
     });
 
     res.json({ token });
-  } catch (error) {
-    console.log(error.message);
+  } catch (error: any) {
+    console.log(error?.message);
     res.sendStatus(500);
   }
 });
