@@ -2,7 +2,7 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import type { Secret } from "jsonwebtoken";
-import prismaDb from "../prismaClient";
+import prismaDb from "../prismaClient.ts";
 
 // Расширяем тип JwtPayload для включения id, которым пользуемся в методе sign,
 // чтобы потом извлекать его из токена в authMiddleware (метод verify)

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --watch --inspect --experimental-strip-types ./src/server.ts"
+    "dev": "node --watch --inspect=0.0.0.0:9229 --experimental-strip-types ./src/server.ts"
   },
   "keywords": [],
   "author": "",
