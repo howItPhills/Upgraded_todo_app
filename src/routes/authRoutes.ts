@@ -2,10 +2,12 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import type { Secret } from "jsonwebtoken";
+import type { Response } from "express";
 import prismaDb from "../prismaClient.ts";
+import type { LoginRequest, RegisterRequest } from "./types.ts";
 
-// Расширяем тип JwtPayload для включения id, которым пользуемся в методе sign,
-// чтобы потом извлекать его из токена в authMiddleware (метод verify)
+// Расширяем тип JwtPayload для включения id, которым пользуемся в методе sign
+// при создании токена, чтобы потом извлекать его из токена в authMiddleware(метод verify)
 declare module "jsonwebtoken" {
   interface JwtPayload {
     id: number;
@@ -14,7 +16,7 @@ declare module "jsonwebtoken" {
 
 const router = express.Router();
 
-router.post("/login", async (req, res) => {
+router.post("/login", async (req: LoginRequest, res: Response) => {
   try {
     const user = await prismaDb.user.findUnique({
       where: {
@@ -47,7 +49,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/register", async (req, res) => {
+router.post("/register", async (req: RegisterRequest, res: Response) => {
   const body = req.body;
 
   //Encrypting the password, can't be decrypted

@@ -283,7 +283,7 @@
         },
         body: JSON.stringify({
           task: todos.find((val) => val.id === index).task,
-          completed: 1,
+          completed: true,
         }),
       });
       fetchTodos();
