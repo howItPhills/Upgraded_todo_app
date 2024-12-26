@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 import authRouter from "./routes/authRoutes.ts";
 import authMiddleware from "./middleware/authMiddleware.ts";
 import todosRouter from "./routes/todosRoutes.ts";
+import testsRouter from "./routes/testsRoutes.ts";
 
 const app = express();
 const PORT = process.env.PORT || 9000;
@@ -19,6 +20,7 @@ app.use(express.json());
 
 app.use("/auth", authRouter);
 app.use("/todos", authMiddleware, todosRouter); //Protected routes
+app.use("/__tests__", testsRouter);
 
 // Makes directory path to be outside of src folder
 app.use(express.static(path.join(__dirname, "../public")));

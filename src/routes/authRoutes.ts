@@ -42,7 +42,7 @@ router.post("/login", async (req: LoginRequest, res: Response) => {
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as Secret, {
       expiresIn: "24h",
     });
-    res.json({ token });
+    res.status(200).json({ token });
   } catch (error: any) {
     console.log(error?.message);
     res.sendStatus(500);
@@ -56,6 +56,18 @@ router.post("/register", async (req: RegisterRequest, res: Response) => {
   const hashedPassword = bcrypt.hashSync(body.password, 8);
 
   try {
+    const existingUser = await prismaDb.user.findUnique({
+      where: {
+        username: body.username,
+      },
+    });
+
+    if (existingUser) {
+      res.status(401).json({ message: "User already exists" });
+      return;
+    }
+
+    // Create a new user
     const user = await prismaDb.user.create({
       data: {
         username: body.username,
@@ -63,6 +75,7 @@ router.post("/register", async (req: RegisterRequest, res: Response) => {
       },
     });
 
+    // Create a default task for the new user
     const defaultTask = "Hi, let's add your first todo";
 
     await prismaDb.todo.create({
@@ -72,11 +85,12 @@ router.post("/register", async (req: RegisterRequest, res: Response) => {
       },
     });
 
+    // Create a token for the new user
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as Secret, {
       expiresIn: "24h",
     });
 
-    res.json({ token });
+    res.status(201).json({ token });
   } catch (error: any) {
     console.log(error?.message);
     res.sendStatus(500);

@@ -10,6 +10,7 @@ import type {
 
 const router = express.Router();
 
+// Get all todos for the user
 router.get("/", async (req: AuthedRequest, res: Response) => {
   try {
     const todos = await prismaDb.todo.findMany({
@@ -24,6 +25,7 @@ router.get("/", async (req: AuthedRequest, res: Response) => {
   }
 });
 
+// Create a new todo for the user
 router.post("/", async (req: PostTaskRequest, res: Response) => {
   const { task, userId } = req.body;
 
@@ -41,6 +43,7 @@ router.post("/", async (req: PostTaskRequest, res: Response) => {
   }
 });
 
+// Update a todo for the user
 router.put("/:todoId", async (req: PutToTaskRequest, res: Response) => {
   const { todoId } = req.params;
   const { completed, userId } = req.body;
@@ -53,7 +56,7 @@ router.put("/:todoId", async (req: PutToTaskRequest, res: Response) => {
         userId,
       },
       data: {
-        completed: !!completed,
+        completed,
       },
     });
     res.status(201).json(updated);
@@ -63,6 +66,7 @@ router.put("/:todoId", async (req: PutToTaskRequest, res: Response) => {
   }
 });
 
+// Delete a todo for the user
 router.delete("/:todoId", async (req: DeleteTaskRequest, res: Response) => {
   const { todoId } = req.params;
   const { userId } = req.body;
@@ -75,7 +79,7 @@ router.delete("/:todoId", async (req: DeleteTaskRequest, res: Response) => {
         userId,
       },
     });
-    res.sendStatus(200);
+    res.sendStatus(204);
   } catch (error: any) {
     console.log(error?.message);
     res.sendStatus(500);
